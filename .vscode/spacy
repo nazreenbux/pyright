@@ -1,0 +1,30 @@
+import spacy
+
+def find_similar_movie(input_description):
+# Load the pre-trained English language model
+    nlp = spacy.load("en_core_web_md")
+    
+    # Read movie descriptions from file
+    with open("movies.txt", "r") as file:
+        movie_lines = file.readlines()
+    
+    # Extract titles and descriptions
+    movie_titles = [line.split(":")[0] for line in movie_lines]
+    movie_descriptions = [line.split(":")[1].strip() for line in movie_lines]
+    
+    # Calculate similarity between input description and all other descriptions
+    similarity_scores = []
+    for description in movie_descriptions:
+        similarity = nlp(input_description).similarity(nlp(description))
+        similarity_scores.append(similarity)
+    
+    # Find the index of the most similar movie
+    most_similar_index = similarity_scores.index(max(similarity_scores))
+    
+    # Return the title of the most similar movie
+    return movie_titles[most_similar_index]
+
+# Example usage
+input_description = "Will he save their world or destroy it? When the Hulk becomes too dangerous for the Earth, the Illuminati trick Hulk into a shuttle and launch him into space to a planet where the Hulk can live in peace. Unfortunately, Hulk lands on the planet Sakaar where he is sold into slavery and trained as a gladiator."
+most_similar_movie = find_similar_movie(input_description)
+print("Next movie to watch:", most_similar_movie)
